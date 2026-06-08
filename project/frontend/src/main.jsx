@@ -11,6 +11,36 @@ const navItems = [
   { id: 'assistant', label: 'Assistente', icon: 'spark' },
 ];
 
+const forecastFallbackSamples = [
+  {
+    id: 'forecast-real-low',
+    level: 'LOW',
+    label: 'NASA/SpaceWeatherLive LOW',
+    template: 'forecast_real',
+    channel: 'NASA SDO AIA 131',
+    filename: 'low_20210218_010532_1024_0131.jpg',
+    url: '/samples/forecast-real/low_20210218_010532_1024_0131.jpg',
+  },
+  {
+    id: 'forecast-real-medium',
+    level: 'MEDIUM',
+    label: 'NASA/SpaceWeatherLive MEDIUM',
+    template: 'forecast_real',
+    channel: 'NASA SDO AIA 131',
+    filename: 'medium_20201129_125522_1024_0131.jpg',
+    url: '/samples/forecast-real/medium_20201129_125522_1024_0131.jpg',
+  },
+  {
+    id: 'forecast-real-high',
+    level: 'HIGH',
+    label: 'NASA/SpaceWeatherLive HIGH',
+    template: 'forecast_real',
+    channel: 'NASA SDO AIA 131',
+    filename: 'high_20230509_224508_1024_0131.jpg',
+    url: '/samples/forecast-real/high_20230509_224508_1024_0131.jpg',
+  },
+];
+
 function Icon({ name }) {
   const common = { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8 };
   const paths = {
@@ -326,8 +356,11 @@ function SolarAnalysis({ latest, setLatest, refresh, notify, modelStatus, spaceW
   const recommendedSamples = samples.filter((sample) => ['validated_aia_131', 'recommended_aia_131', 'forecast_demo', 'forecast_real'].includes(sample.template));
 
   useEffect(() => {
-    apiJson('/samples').then(setSamples).catch(() => setSamples([]));
-  }, []);
+    const fallback = isForecast ? forecastFallbackSamples : [];
+    apiJson('/samples')
+      .then((data) => setSamples(data?.length ? data : fallback))
+      .catch(() => setSamples(fallback));
+  }, [isForecast]);
 
   const selectFile = (event) => {
     const next = event.target.files?.[0];
