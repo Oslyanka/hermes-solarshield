@@ -232,8 +232,8 @@ def _build_acv_deep_model(nn: Any) -> Any:
 
 
 def load_model() -> Any | None:
-    """Load the trained model. Demo mode returns None."""
     model_path = _resolve_model_path()
+    print(f"MODEL PATH: {model_path}, EXISTS: {model_path.exists()}")
     if not model_path.exists():
         return None
     try:
@@ -277,7 +277,8 @@ def load_model() -> Any | None:
             model.hermes_metadata = {"architecture": "unknown", "path": str(model_path)}
         model.eval()
         return model
-    except Exception:
+    except Exception as e:
+        print(f"MODEL LOAD EXCEPTION: {e}")
         return None
 
 
