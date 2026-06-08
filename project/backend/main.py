@@ -123,14 +123,14 @@ def aia_131_examples() -> list[dict[str, str]]:
 @app.on_event("startup")
 def startup() -> None:
     global MODEL
+    import os
+    print("APP DIR CONTENTS:", os.listdir("/app"))
+    print("ML DIR:", os.listdir("/app/ml") if os.path.exists("/app/ml") else "NO ML DIR")
+    print("MODELS DIR:", os.listdir("/app/ml/models") if os.path.exists("/app/ml/models") else "NO MODELS DIR")
     init_db()
     ensure_samples()
-    try:
-        MODEL = load_model()
-        print(f"MODEL LOADED: {MODEL}")
-    except Exception as e:
-        print(f"MODEL LOAD FAILED: {e}")
-        MODEL = None
+    MODEL = load_model()
+    print(f"MODEL LOADED: {MODEL}")
 
 
 @app.get("/health")
