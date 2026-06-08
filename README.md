@@ -76,6 +76,50 @@ O dashboard ficara em:
 http://127.0.0.1:5173
 ```
 
+## Deploy
+
+### Railway
+
+Deploy do backend FastAPI:
+
+```text
+root: project/backend
+start: python -m uvicorn main:app --host 0.0.0.0 --port $PORT
+```
+
+Variaveis no Railway:
+
+```text
+HERMES_MODEL_MODE=forecast
+GENAI_API_KEY=opcional
+```
+
+O start command tambem esta em `project/backend/Procfile`.
+
+### Vercel
+
+Deploy do frontend Vite:
+
+```text
+root: project/frontend
+build: npm run build
+output: dist
+```
+
+URL publica:
+
+```text
+https://hermessolarshield.vercel.app/
+```
+
+O frontend atual usa a API Railway:
+
+```text
+https://solarshield-production.up.railway.app
+```
+
+As configuracoes do Vercel estao em `project/frontend/vercel.json`.
+
 ## Endpoints principais
 
 - `GET /health`: status da API.
@@ -100,7 +144,7 @@ O projeto possui dois caminhos:
 
 - `solar_flare_classifier_131.pt`: classificador ACV atual, treinado do zero com SDOBenchmark AIA 131 para classes `LOW`, `MEDIUM` e `HIGH`.
 - `solar_flare_cnn.pt`: classificador binario legado para risco geral.
-- `solar_flare_cmx_131.pt`: modelo multi-label auxiliar, treinado no canal SDO AIA 131 para estimar chances de flares C-class, M-class e X-class.
+- `solar_flare_cmx_131.bin`: modelo auxiliar de forecast C/M/X, treinado com snapshots historicos do SpaceWeatherLive via Wayback Machine e imagens NASA SDO AIA 131.
 
 O backend prioriza `backend/ml/models/solar_flare_classifier_131.pt` quando esse arquivo existe. Esse checkpoint atende ao requisito de classificacao de imagens da materia Applied Computer Vision. A saida principal e `class_probabilities`:
 
@@ -152,9 +196,9 @@ Carrega o modelo academico `solar_flare_classifier_131.pt` e mostra `Prob. LOW`,
 HERMES_MODEL_MODE=forecast
 ```
 
-Carrega o modelo `solar_flare_cmx_131.pt`, treinado para aproximar as porcentagens historicas C/M/X do SpaceWeatherLive. Nessa configuracao o frontend deve mostrar `Chance C-class`, `Chance M-class` e `Chance X-class`, nao probabilidades LOW/MEDIUM/HIGH.
+Carrega o modelo `solar_flare_cmx_131.bin`, treinado para aproximar as porcentagens historicas C/M/X do SpaceWeatherLive. Nessa configuracao o frontend deve mostrar `Chance C-class`, `Chance M-class` e `Chance X-class`, nao probabilidades LOW/MEDIUM/HIGH.
 
-No modo `forecast`, o backend usa a saida direta do modelo `solar_flare_cmx_131.pt`, sem calibracao externa ou ajuste posterior por arquivo JSON. O SpaceWeatherLive aparece apenas como referencia de comparacao na interface.
+No modo `forecast`, o backend usa a saida direta do modelo `solar_flare_cmx_131.bin`, sem calibracao externa ou ajuste posterior por arquivo JSON. O SpaceWeatherLive aparece apenas como referencia de comparacao na interface.
 
 Exemplo no PowerShell:
 
@@ -164,44 +208,23 @@ $env:HERMES_MODEL_MODE="forecast"
 .\.venv\Scripts\python.exe -m uvicorn main:app --reload
 ```
 
-Modelo DONKI alternativo, mantido como referencia academica:
+Modelo de forecast atual:
 
 ```text
-macro_accuracy: 92.31%
-C accuracy: 100.00%
-M accuracy: 84.62%
-X accuracy: 92.31%
-canal: SDO AIA 131
-fonte de treino: NASA DONKI FLR + SDO AIA 131
+fonte: Wayback SpaceWeatherLive + NASA SDO AIA 131
+amostras historicas: 107
+checkpoint: backend/ml/models/solar_flare_cmx_131.bin
+MAE historico geral: 13.15 pontos percentuais
+MAE C/M/X: 12.26 / 18.86 / 8.33 pontos percentuais
+comparacao atual SpaceWeatherLive: SWL 95/55/10 vs Hermes 99.5/62.8/14.9
+status 88%: nao atingido
 ```
 
-Modelo de forecast atual, treinado para aproximar as probabilidades historicas do SpaceWeatherLive:
+Relatorios da tentativa:
 
 ```text
-amostras: 114 registros historicos/validos
-imagem: NASA SDO AIA 131 original, 1024_0131.jpg
-rotulo: Wayback Machine da pagina SpaceWeatherLive Solar Flares
-modo atual: ensemble simples dos dois melhores checkpoints por validacao
-calibracao manual: nao aplicada
-protected samples: desabilitado por padrao no re-treino honesto
-MAE medio do melhor membro: 8.35 pontos percentuais
-MAE C do melhor membro: 5.39 pontos percentuais
-MAE M do melhor membro: 12.46 pontos percentuais
-MAE X do melhor membro: 7.20 pontos percentuais
-avaliacao externa atual: C 99.1% vs 99%, M 55.6% vs 60%, X 21.8% vs 15%
-fonte de treino: Wayback SpaceWeatherLive forecast + NASA SDO AIA 131 ensemble
-```
-
-Relatorio do re-treino honesto:
-
-```text
-backend/reports/wayback_forecast_retrain_report.md
-```
-
-O checkpoint antigo de 90.48% com tolerancia de +/-25 pontos percentuais foi preservado em:
-
-```text
-backend/ml/models/solar_flare_cmx_131_tol025_backup.pt
+backend/reports/gs_88_retry_report.md
+backend/reports/wayback_forecast_evaluation.md
 ```
 
 ## Modo demo
@@ -293,7 +316,7 @@ Para treinar o modelo de forecast usando snapshots do Wayback da pagina do Space
 
 ```bash
 python ml/train_wayback_forecast.py --start 20200901 --end 20260602 --dataset-dir data/wayback_swl_0131 --snapshot-limit 500 --max-per-day 1 --build-only
-python ml/train_wayback_forecast.py --dataset-dir data/wayback_swl_0131 --output ml/models/solar_flare_cmx_131.pt --train-only --max-epochs 220 --target-accuracy 0.95 --target-mae 0.035 --tolerance 0.05 --batch-size 16 --patience 70 --seed 7
+python ml/train_wayback_forecast.py --dataset-dir data/wayback_swl_0131 --output ml/models/solar_flare_cmx_131.bin --train-only --max-epochs 220 --target-accuracy 0.95 --target-mae 0.035 --tolerance 0.05 --batch-size 16 --patience 70 --seed 7
 ```
 
 Este e o caminho recomendado quando o objetivo e aproximar as porcentagens exibidas pelo SpaceWeatherLive, e nao apenas classificar eventos fisicos C/M/X.
