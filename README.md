@@ -91,7 +91,6 @@ Variaveis no Railway:
 
 ```text
 HERMES_MODEL_MODE=forecast
-GENAI_API_KEY=opcional
 ```
 
 O start command tambem esta em `project/backend/Procfile`.
