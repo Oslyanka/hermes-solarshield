@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 
-const API_BASE = (
-  import.meta.env.VITE_API_URL || 'https://solarshield-production.up.railway.app'
-).replace(/\/$/, '');
+const API_BASE = 'https://solarshield-production.up.railway.app';
 
 const navItems = [
   { id: 'overview', label: 'Inicio', icon: 'file' },
