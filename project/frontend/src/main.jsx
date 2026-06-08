@@ -322,7 +322,8 @@ function SolarAnalysis({ latest, setLatest, refresh, notify, modelStatus, spaceW
   const [preview, setPreview] = useState('');
   const [samples, setSamples] = useState([]);
   const [busy, setBusy] = useState(false);
-  const recommendedSamples = samples.filter((sample) => ['validated_aia_131', 'recommended_aia_131'].includes(sample.template));
+  const isForecast = modelStatus?.selected_model_mode === 'forecast';
+  const recommendedSamples = samples.filter((sample) => ['validated_aia_131', 'recommended_aia_131', 'forecast_demo'].includes(sample.template));
 
   useEffect(() => {
     apiJson('/samples').then(setSamples).catch(() => setSamples([]));
@@ -370,7 +371,7 @@ function SolarAnalysis({ latest, setLatest, refresh, notify, modelStatus, spaceW
       <div className="panel">
         <div className="panel-heading">
           <h3>Imagem solar</h3>
-          <span className="status-chip">Templates validados</span>
+          <span className="status-chip">{isForecast ? 'Exemplos forecast' : 'Templates validados'}</span>
         </div>
         <label className="drop-zone">
           <input type="file" accept="image/*" onChange={selectFile} />

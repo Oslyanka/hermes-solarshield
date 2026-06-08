@@ -163,6 +163,23 @@ def aia_131_examples() -> list[dict[str, str]]:
     return examples
 
 
+def forecast_demo_examples() -> list[dict[str, str]]:
+    ensure_samples()
+    return [
+        {
+            "id": f"forecast-{level}",
+            "level": level.upper(),
+            "label": f"Forecast demo {level.upper()}",
+            "template": "forecast_demo",
+            "channel": "Forecast C/M/X",
+            "format": "demo PNG",
+            "filename": f"solar_{level}.png",
+            "url": f"/samples/solar_{level}.png",
+        }
+        for level in ("low", "medium", "high")
+    ]
+
+
 @app.on_event("startup")
 def startup() -> None:
     global MODEL
@@ -230,6 +247,8 @@ def spaceweatherlive() -> dict[str, Any]:
 @app.get("/samples")
 def samples() -> list[dict[str, str]]:
     ensure_samples()
+    if MODEL_MODE in {"forecast", "cmx", "spaceweatherlive"}:
+        return forecast_demo_examples()
     real_examples = aia_131_examples()
     if real_examples:
         return real_examples

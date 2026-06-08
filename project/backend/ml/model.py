@@ -323,7 +323,7 @@ def _risk_from_probabilities(probabilities: dict[str, float]) -> str:
     # elevated M/X-class chances.
     if probabilities["X"] >= 0.14 or probabilities["M"] >= 0.8:
         return "HIGH"
-    if probabilities["X"] >= 0.04 or probabilities["M"] >= 0.25 or probabilities["C"] >= 0.65:
+    if probabilities["X"] >= 0.04 or probabilities["M"] >= 0.25:
         return "MEDIUM"
     return "LOW"
 
