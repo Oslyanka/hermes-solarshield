@@ -1,2 +1,13 @@
-uvicorn 
-fastapi 
+requests==2.34.2 
+fastapi==0.136.1 
+uvicorn==0.47.0 
+python-dotenv==1.2.2 
+numpy==2.4.3 
+pillow==12.1.1 
+scikit-learn==1.8.0 
+joblib==1.5.3 
+torch==2.7.0 
+opencv-python==4.13.0.92 
+pandas==3.0.1 
+python-multipart==0.0.29 
+httpx==0.28.1 
