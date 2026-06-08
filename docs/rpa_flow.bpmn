@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  id="Definitions_HermesSolarShield"
+  targetNamespace="https://hermes-solarshield.local/bpmn">
+  <process id="HermesSolarShieldOperationalRoutine" name="Hermes SolarShield Operational Routine" isExecutable="true">
+    <startEvent id="Start_TimerOrManual" name="Manual or scheduled trigger" />
+    <sequenceFlow id="Flow_01" sourceRef="Start_TimerOrManual" targetRef="Task_LoadSolarImage" />
+    <serviceTask id="Task_LoadSolarImage" name="Load validated solar image" />
+    <sequenceFlow id="Flow_02" sourceRef="Task_LoadSolarImage" targetRef="Task_CallPredictionApi" />
+    <serviceTask id="Task_CallPredictionApi" name="POST image to prediction API" />
+    <sequenceFlow id="Flow_03" sourceRef="Task_CallPredictionApi" targetRef="Gateway_RiskDecision" />
+    <exclusiveGateway id="Gateway_RiskDecision" name="Risk rule" />
+    <sequenceFlow id="Flow_04" name="LOW or MEDIUM" sourceRef="Gateway_RiskDecision" targetRef="Task_SaveAnalysis" />
+    <sequenceFlow id="Flow_05" name="HIGH" sourceRef="Gateway_RiskDecision" targetRef="Task_RegisterPriorityAlert" />
+    <serviceTask id="Task_RegisterPriorityAlert" name="Register priority alert" />
+    <sequenceFlow id="Flow_06" sourceRef="Task_RegisterPriorityAlert" targetRef="Task_SaveAnalysis" />
+    <serviceTask id="Task_SaveAnalysis" name="Save analysis in SQLite" />
+    <sequenceFlow id="Flow_07" sourceRef="Task_SaveAnalysis" targetRef="Task_GenerateReport" />
+    <serviceTask id="Task_GenerateReport" name="Generate TXT/PDF report" />
+    <sequenceFlow id="Flow_08" sourceRef="Task_GenerateReport" targetRef="Task_UpdateSharedSheet" />
+    <serviceTask id="Task_UpdateSharedSheet" name="Update shared alert spreadsheet" />
+    <sequenceFlow id="Flow_09" sourceRef="Task_UpdateSharedSheet" targetRef="Task_CreateEmailDraft" />
+    <serviceTask id="Task_CreateEmailDraft" name="Create formatted email draft" />
+    <sequenceFlow id="Flow_10" sourceRef="Task_CreateEmailDraft" targetRef="Task_WriteEvidence" />
+    <serviceTask id="Task_WriteEvidence" name="Write logs and JSON evidence" />
+    <sequenceFlow id="Flow_11" sourceRef="Task_WriteEvidence" targetRef="End_Completed" />
+    <endEvent id="End_Completed" name="Routine completed" />
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_HermesSolarShield">
+    <bpmndi:BPMNPlane id="BPMNPlane_HermesSolarShield" bpmnElement="HermesSolarShieldOperationalRoutine" />
+  </bpmndi:BPMNDiagram>
+</definitions>

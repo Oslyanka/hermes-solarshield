@@ -1,0 +1,23 @@
+{
+  "status": "completed",
+  "api_url": "http://127.0.0.1:8000",
+  "sample": "C:\\Users\\Vainamoinen\\Documents\\CV projects\\hermes-solarshield\\backend\\sample_data\\acv_recommended_0131\\high_1_2017-09-04T211001__131.jpg",
+  "analysis": {
+    "id": 99,
+    "risk_level": "HIGH",
+    "score": 0.858,
+    "confidence": 0.836,
+    "source": "high_1_2017-09-04T211001__131.jpg"
+  },
+  "report": {
+    "id": 4,
+    "title": "Relatorio Hermes SolarShield #99",
+    "txt_path": "C:\\Users\\Vainamoinen\\Documents\\CV projects\\hermes-solarshield\\backend\\reports\\hermes_report_99_2026-06-05T04-59-04+00-00.txt",
+    "pdf_path": "C:\\Users\\Vainamoinen\\Documents\\CV projects\\hermes-solarshield\\backend\\reports\\hermes_report_99_2026-06-05T04-59-04+00-00.pdf"
+  },
+  "alert": {
+    "csv_path": "C:\\Users\\Vainamoinen\\Documents\\CV projects\\hermes-solarshield\\backend\\reports\\operational_alerts\\shared_ops_alerts.csv",
+    "email_path": "C:\\Users\\Vainamoinen\\Documents\\CV projects\\hermes-solarshield\\backend\\reports\\operational_alerts\\alert_analysis_99_2026-06-05T04-59-04+00-00.eml"
+  },
+  "log_path": "C:\\Users\\Vainamoinen\\Documents\\CV projects\\hermes-solarshield\\backend\\logs\\rpa.log"
+}

@@ -1,0 +1,12 @@
+backend/database/*.db
+backend/logs/*.log
+backend/reports/*.txt
+backend/reports/*.pdf
+backend/ml/models/*.pt
+backend/data/
+frontend/node_modules/
+frontend/dist/
+backend/.venv/
+__pycache__/
+*.pyc
+.env

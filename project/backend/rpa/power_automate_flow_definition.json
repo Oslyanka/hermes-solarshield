@@ -1,0 +1,97 @@
+{
+  "name": "Hermes SolarShield - Operational Monitoring Flow",
+  "description": "Fluxo de automacao para monitorar imagem solar, classificar risco, gerar relatorio e registrar alerta operacional.",
+  "trigger": {
+    "type": "Recurrence",
+    "frequency": "Hour",
+    "interval": 1,
+    "notes": "Na demonstracao local, o mesmo fluxo e executado por backend/rpa/run_operational_routine.ps1."
+  },
+  "connections": [
+    {
+      "name": "Hermes API",
+      "type": "HTTP",
+      "base_url": "http://127.0.0.1:8000"
+    },
+    {
+      "name": "Shared Operations Sheet",
+      "type": "Excel/CSV",
+      "path": "backend/reports/operational_alerts/shared_ops_alerts.csv"
+    },
+    {
+      "name": "Formatted Email Draft",
+      "type": "Outlook/SMTP draft",
+      "path": "backend/reports/operational_alerts/alert_analysis_*.eml"
+    }
+  ],
+  "actions": [
+    {
+      "id": "capture_space_weather_source",
+      "type": "FileOrHttpCapture",
+      "input": "backend/sample_data/acv_recommended_0131/high_*.jpg",
+      "purpose": "Captura uma imagem SDO AIA 131 validada para a rotina operacional."
+    },
+    {
+      "id": "classify_flare_risk",
+      "type": "HttpPostMultipart",
+      "endpoint": "/predict",
+      "body": {
+        "file": "@captured_image"
+      },
+      "output": "analysis"
+    },
+    {
+      "id": "risk_decision",
+      "type": "Condition",
+      "expression": "analysis.risk_level == 'HIGH' || analysis.risk_level == 'MEDIUM'",
+      "true_branch": "generate_report_and_alert",
+      "false_branch": "log_low_risk_observation"
+    },
+    {
+      "id": "generate_report",
+      "type": "HttpPostJson",
+      "endpoint": "/generate-report",
+      "body": {
+        "analysis_id": "@analysis.id"
+      },
+      "output": "report"
+    },
+    {
+      "id": "append_shared_sheet",
+      "type": "AppendCsvRow",
+      "path": "backend/reports/operational_alerts/shared_ops_alerts.csv",
+      "columns": ["created_at", "analysis_id", "risk_level", "score", "confidence", "source", "report_id"]
+    },
+    {
+      "id": "create_email_draft",
+      "type": "CreateEmailDraft",
+      "to": "orbital-ops-team@example.com",
+      "subject": "Hermes SolarShield alert - @analysis.risk_level risk",
+      "body_template": "Analysis @analysis.id generated report @report.id with risk @analysis.risk_level."
+    },
+    {
+      "id": "save_evidence",
+      "type": "WriteJson",
+      "path": "backend/reports/rpa_last_run.json"
+    }
+  ],
+  "exception_handling": [
+    {
+      "case": "API unavailable",
+      "action": "Registrar falha em backend/logs/rpa.log e repetir apos a proxima recorrencia."
+    },
+    {
+      "case": "Image source unavailable",
+      "action": "Usar template validado local para manter a demonstracao operacional."
+    },
+    {
+      "case": "Report generation failure",
+      "action": "Salvar analise e gerar email com alerta sem anexo."
+    }
+  ],
+  "evidence": {
+    "last_run": "backend/reports/rpa_last_run.json",
+    "log": "backend/logs/rpa.log",
+    "bpmn": "docs/rpa_flow.bpmn"
+  }
+}

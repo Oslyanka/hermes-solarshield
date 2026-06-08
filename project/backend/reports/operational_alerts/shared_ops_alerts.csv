@@ -1,0 +1,3 @@
+created_at,analysis_id,risk_level,score,confidence,source,report_id
+2026-06-05T04:58:06+00:00,98,HIGH,0.858,0.836,automation:high_1_2017-09-04T211001__131.jpg,3
+2026-06-05T04:59:04+00:00,99,HIGH,0.858,0.836,high_1_2017-09-04T211001__131.jpg,4

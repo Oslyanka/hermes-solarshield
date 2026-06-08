@@ -1,0 +1,129 @@
+{
+  "dataset": "C:\\Users\\Vainamoinen\\Documents\\CV projects\\hermes-solarshield\\backend\\data\\gaie\\solar_ops_synthetic.csv",
+  "rows": 1200,
+  "columns": 13,
+  "features": [
+    "c_probability",
+    "m_probability",
+    "x_probability",
+    "solar_wind_speed_kms",
+    "proton_density_pcm3",
+    "xray_flux",
+    "kp_index",
+    "satellite_altitude_km",
+    "radiation_dose_rate",
+    "payload_criticality",
+    "comms_dependency",
+    "battery_margin_pct"
+  ],
+  "models": {
+    "random_forest": {
+      "accuracy": 0.7958,
+      "classification_report": {
+        "HIGH": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1.0
+        },
+        "LOW": {
+          "precision": 0.8657718120805369,
+          "recall": 0.821656050955414,
+          "f1-score": 0.8431372549019608,
+          "support": 157.0
+        },
+        "MEDIUM": {
+          "precision": 0.6813186813186813,
+          "recall": 0.7560975609756098,
+          "f1-score": 0.7167630057803468,
+          "support": 82.0
+        },
+        "accuracy": 0.7958333333333333,
+        "macro avg": {
+          "precision": 0.5156968311330727,
+          "recall": 0.5259178706436746,
+          "f1-score": 0.5199667535607692,
+          "support": 240.0
+        },
+        "weighted avg": {
+          "precision": 0.7991429431865673,
+          "recall": 0.7958333333333333,
+          "f1-score": 0.7964463145566512,
+          "support": 240.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          129,
+          28,
+          0
+        ],
+        [
+          20,
+          62,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    },
+    "gradient_boosting": {
+      "accuracy": 0.8083,
+      "classification_report": {
+        "HIGH": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1.0
+        },
+        "LOW": {
+          "precision": 0.8544303797468354,
+          "recall": 0.8598726114649682,
+          "f1-score": 0.8571428571428571,
+          "support": 157.0
+        },
+        "MEDIUM": {
+          "precision": 0.7195121951219512,
+          "recall": 0.7195121951219512,
+          "f1-score": 0.7195121951219512,
+          "support": 82.0
+        },
+        "accuracy": 0.8083333333333333,
+        "macro avg": {
+          "precision": 0.5246475249562622,
+          "recall": 0.5264616021956398,
+          "f1-score": 0.5255516840882694,
+          "support": 240.0
+        },
+        "weighted avg": {
+          "precision": 0.8047732067510548,
+          "recall": 0.8083333333333333,
+          "f1-score": 0.806547619047619,
+          "support": 240.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          135,
+          22,
+          0
+        ],
+        [
+          23,
+          59,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ]
+    }
+  },
+  "best_model": "gradient_boosting",
+  "best_accuracy": 0.8083
+}
