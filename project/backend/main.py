@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+import json
 import re
 import requests
 from dotenv import load_dotenv
@@ -26,6 +27,7 @@ from sample_data.generate_samples import create_sample
 BASE_DIR = Path(__file__).resolve().parent
 SAMPLE_DIR = BASE_DIR / "sample_data"
 LOG_FILE = BASE_DIR / "logs" / "rpa.log"
+WAYBACK_EVALUATION_PATH = BASE_DIR / "reports" / "wayback_forecast_evaluation.json"
 SPACEWEATHERLIVE_URL = "https://www.spaceweatherlive.com/en/solar-activity.html"
 
 app = FastAPI(title="Hermes SolarShield API", version="1.0.0")
@@ -43,6 +45,42 @@ app.add_middleware(
 )
 
 MODEL = None
+
+
+def historical_backtest_summary(metadata: dict[str, Any]) -> dict[str, Any] | None:
+    metrics = metadata.get("metrics") or {}
+    summary: dict[str, Any] = {}
+    if WAYBACK_EVALUATION_PATH.exists():
+        try:
+            evaluation = json.loads(WAYBACK_EVALUATION_PATH.read_text(encoding="utf-8"))
+            report_summary = evaluation.get("summary") or {}
+            if report_summary:
+                summary = {
+                    "source": "Wayback SpaceWeatherLive + NASA SDO AIA 131",
+                    "samples": report_summary.get("samples"),
+                    "mae_points": report_summary.get("mae_points"),
+                    "within_tolerance_percent": report_summary.get("within_tolerance_percent"),
+                }
+        except Exception:
+            summary = {}
+    if not summary and metrics:
+        tolerance = float(metrics.get("tolerance") or 0.05)
+        summary = {
+            "source": "checkpoint validation split",
+            "samples": None,
+            "mae_points": {
+                "general": round(float(metrics.get("mae", 0.0)) * 100, 2),
+                "C": round(float(metrics.get("mae_c", 0.0)) * 100, 2),
+                "M": round(float(metrics.get("mae_m", 0.0)) * 100, 2),
+                "X": round(float(metrics.get("mae_x", 0.0)) * 100, 2),
+            },
+            "within_tolerance_percent": {
+                f"+/-{int(tolerance * 100)}_points": {
+                    "general": round(float(metrics.get("accuracy_within_tolerance", 0.0)) * 100, 2)
+                }
+            },
+        }
+    return summary or None
 
 
 class ReportRequest(BaseModel):
@@ -152,6 +190,7 @@ def model_status() -> dict[str, Any]:
         "model_path": str(MODEL_PATH),
         "model_exists": MODEL_PATH.exists(),
         "model_metadata": metadata,
+        "historical_backtest": historical_backtest_summary(metadata),
         "external_calibration_applied": False,
     }
 

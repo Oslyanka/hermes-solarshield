@@ -318,11 +318,21 @@ def _probabilities_from_score(score: float) -> dict[str, float]:
 
 
 def _risk_from_probabilities(probabilities: dict[str, float]) -> str:
-    if probabilities["X"] >= 0.1 or probabilities["M"] >= 0.45 or probabilities["C"] >= 0.75:
+    # C-class probability is common during active periods and should not by
+    # itself make every preview image HIGH. Operational severity is driven by
+    # elevated M/X-class chances.
+    if probabilities["X"] >= 0.14 or probabilities["M"] >= 0.8:
         return "HIGH"
-    if probabilities["M"] >= 0.2 or probabilities["C"] >= 0.4:
+    if probabilities["X"] >= 0.04 or probabilities["M"] >= 0.25 or probabilities["C"] >= 0.65:
         return "MEDIUM"
     return "LOW"
+
+
+def _operational_score_from_probabilities(probabilities: dict[str, float]) -> float:
+    c_component = min(probabilities["C"] * 0.35, 0.35)
+    m_component = probabilities["M"] * 0.85
+    x_component = probabilities["X"] * 4.0
+    return float(max(0.0, min(max(c_component, m_component, x_component), 1.0)))
 
 
 def _flare_probabilities_from_classes(class_probabilities: dict[str, float]) -> dict[str, float]:
@@ -444,7 +454,7 @@ def predict_flare_risk(image_bytes: bytes, model: Any | None = None, forecast_ca
             features = {**features, "calibration": "none_historical_donki_model"}
         else:
             features = {**features, "calibration": "none_model_outputs_cmx"}
-        score = probabilities["C"]
+        score = _operational_score_from_probabilities(probabilities)
         confidence = float(np.mean([max(value, 1.0 - value) for value in probabilities.values()]))
 
     risk = _risk_from_probabilities(probabilities)

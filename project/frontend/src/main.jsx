@@ -32,6 +32,25 @@ function fmtPercent(value) {
   return `${Math.round(Number(value) * 100)}%`;
 }
 
+function fmtMetricPercent(value) {
+  if (value === undefined || value === null) return '--';
+  return `${Number(value).toFixed(1).replace('.0', '')}%`;
+}
+
+function fmtPoints(value) {
+  if (value === undefined || value === null) return '--';
+  return `${Number(value).toFixed(2)} p.p.`;
+}
+
+function historicalAccuracyLabel(backtest) {
+  const tolerances = backtest?.within_tolerance_percent || {};
+  const key = tolerances['+/-10_points'] ? '+/-10_points' : Object.keys(tolerances)[0];
+  const values = Object.values(tolerances[key] || {}).filter((value) => typeof value === 'number');
+  if (!values.length) return '--';
+  const average = values.reduce((sum, value) => sum + value, 0) / values.length;
+  return `${fmtMetricPercent(average)} (${key.replace('+/-', '+/-').replace('_points', ' p.p.')})`;
+}
+
 function normalizeAnalysis(item) {
   if (!item) return null;
   let metadata = {};
@@ -153,12 +172,14 @@ function App() {
 }
 
 function Overview({ modelStatus, spaceWeather, goToSolar, goToDashboard, goToAssistant }) {
+  const backtest = modelStatus?.historical_backtest;
+  const isForecast = modelStatus?.selected_model_mode === 'forecast';
   const sections = [
     {
       title: 'Leitura visual',
       items: [
         'Upload ou templates solares validados no canal SDO AIA 131.',
-        'Classificacao LOW/MEDIUM/HIGH com probabilidades diretas.',
+        isForecast ? 'Forecast C/M/X comparado com historico SpaceWeatherLive.' : 'Classificacao LOW/MEDIUM/HIGH com probabilidades diretas.',
         'Historico de analises persistido para auditoria.',
       ],
     },
@@ -201,7 +222,8 @@ function Overview({ modelStatus, spaceWeather, goToSolar, goToDashboard, goToAss
           <h3>Status operacional</h3>
           <div className="status-grid">
             <div><span>Modelo</span><strong>{modelStatus?.mode === 'trained' ? 'Treinado' : 'Demo'}</strong></div>
-            <div><span>Saida do modelo</span><strong>Sem ajuste externo</strong></div>
+            <div><span>Backtest historico</span><strong>{historicalAccuracyLabel(backtest)}</strong></div>
+            <div><span>MAE historico</span><strong>{fmtPoints(backtest?.mae_points?.general)}</strong></div>
             <div><span>SWL C-class</span><strong>{spaceWeather?.probabilities?.C ?? '--'}%</strong></div>
           </div>
         </section>
@@ -219,7 +241,7 @@ function Overview({ modelStatus, spaceWeather, goToSolar, goToDashboard, goToAss
           <h3>Fluxo da demonstracao</h3>
           <ol>
             <li>Selecionar uma imagem solar validada.</li>
-            <li>Mostrar a classe LOW/MEDIUM/HIGH e as probabilidades diretas do modelo.</li>
+            <li>{isForecast ? 'Mostrar as porcentagens C/M/X previstas e comparar com SpaceWeatherLive.' : 'Mostrar a classe LOW/MEDIUM/HIGH e as probabilidades diretas do modelo.'}</li>
             <li>Gerar explicacao, resumo e plano de mitigacao.</li>
             <li>Criar um relatorio operacional da ultima analise.</li>
           </ol>
@@ -231,12 +253,13 @@ function Overview({ modelStatus, spaceWeather, goToSolar, goToDashboard, goToAss
 
 function Dashboard({ latest, analyses, health, reports, modelStatus, spaceWeather, goToSolar }) {
   const cTarget = spaceWeather?.probabilities?.C;
+  const backtest = modelStatus?.historical_backtest;
   const cards = [
     { label: 'Ultima previsao', value: latest ? `#${latest.id}` : 'Aguardando', detail: latest?.created_at || 'Execute uma analise' },
     { label: 'Nivel de risco atual', value: latest?.risk_level || 'N/A', detail: latest ? `Score ${Number(latest.score).toFixed(3)}` : 'Sem previsao ativa', risk: latest?.risk_level },
     { label: 'Total de analises', value: analyses.length, detail: 'Registros no SQLite' },
     { label: 'Status do monitoramento', value: health?.status === 'ok' ? 'Online' : 'Offline', detail: `Backend ${health?.mode || 'demo'}` },
-    { label: 'Modelo', value: modelStatus?.mode === 'trained' ? 'Treinado' : 'Demo', detail: 'Saida crua, sem calibracao externa' },
+    { label: 'Modelo', value: modelStatus?.mode === 'trained' ? 'Treinado' : 'Demo', detail: `Backtest ${historicalAccuracyLabel(backtest)}` },
     { label: 'Relatorios', value: reports.length, detail: 'TXT e PDF simples' },
   ];
   return (
@@ -257,9 +280,9 @@ function Dashboard({ latest, analyses, health, reports, modelStatus, spaceWeathe
           <small>referencia externa</small>
         </div>
         <div>
-          <span>Hermes modelo</span>
-          <strong>{latest ? `${Math.round(Number(latest.score) * 100)}%` : '--'}</strong>
-          <small>predicao sem ajuste externo</small>
+          <span>Backtest historico</span>
+          <strong>{historicalAccuracyLabel(backtest)}</strong>
+          <small>MAE {fmtPoints(backtest?.mae_points?.general)}</small>
         </div>
         <div>
           <span>Probabilidades SWL</span>
@@ -399,6 +422,12 @@ function SolarAnalysis({ latest, setLatest, refresh, notify, modelStatus, spaceW
                   M {spaceWeather?.probabilities?.M ?? '--'}% /
                   X {spaceWeather?.probabilities?.X ?? '--'}%
                 </strong>
+              </div>
+            )}
+            {!latest.class_probabilities && modelStatus?.historical_backtest && (
+              <div className="swl-compare">
+                <span>Backtest historico</span>
+                <strong>{historicalAccuracyLabel(modelStatus.historical_backtest)} / MAE {fmtPoints(modelStatus.historical_backtest.mae_points?.general)}</strong>
               </div>
             )}
             <p>{latest.explanation_short}</p>

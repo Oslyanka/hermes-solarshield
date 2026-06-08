@@ -6,4 +6,7 @@ sample_data/sdo_hmib_samples/
 sample_data/sdo_class_samples/ 
 sample_data/sdo_class_samples_diverse/ 
 sample_data/acv_recommended_0131/ 
-reports/ 
+reports/* 
+!reports/wayback_forecast_evaluation.json 
+!reports/wayback_forecast_evaluation.md 
+!reports/gs_88_retry_report.md 
