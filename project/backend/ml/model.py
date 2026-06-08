@@ -9,9 +9,9 @@ import numpy as np
 from PIL import Image, ImageFilter, ImageOps, ImageStat
 
 BASE_DIR = Path(__file__).resolve().parents[1]
-CLASSIFIER_MODEL_PATH = BASE_DIR / "ml" / "models" / "solar_flare_classifier_131.pt"
-CMX_MODEL_PATH = BASE_DIR / "ml" / "models" / "solar_flare_cmx_131.pt"
-BINARY_MODEL_PATH = BASE_DIR / "ml" / "models" / "solar_flare_cnn.pt"
+CLASSIFIER_MODEL_PATH = BASE_DIR / "ml" / "models" / "solar_flare_classifier_131.bin"
+CMX_MODEL_PATH = BASE_DIR / "ml" / "models" / "solar_flare_cmx_131.bin"
+BINARY_MODEL_PATH = BASE_DIR / "ml" / "models" / "solar_flare_cnn.bin"
 MODEL_MODE = os.getenv("HERMES_MODEL_MODE", "classifier").strip().lower()
 
 
