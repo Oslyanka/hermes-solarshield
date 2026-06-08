@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000';
+const API_URL = import.meta.env.VITE_API_URL;
+
+const res = await fetch(`${API_URL}/health`);
 
 const navItems = [
   { id: 'overview', label: 'Inicio', icon: 'file' },
