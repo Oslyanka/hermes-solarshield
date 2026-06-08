@@ -10,3 +10,8 @@ backend/.venv/
 __pycache__/
 *.pyc
 .env
+
+.vercel
+.venv/ 
+__pycache__/ 
+*.pyc 
