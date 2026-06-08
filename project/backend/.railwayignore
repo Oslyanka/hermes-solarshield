@@ -1,10 +1,9 @@
 .venv/ 
 __pycache__/ 
+*.pyc 
 sample_data/sdo_hmiif_samples/ 
 sample_data/sdo_hmib_samples/ 
 sample_data/sdo_class_samples/ 
 sample_data/sdo_class_samples_diverse/ 
 sample_data/acv_recommended_0131/ 
-sample_data/_tmp/ 
-ml/models/ 
 reports/ 
