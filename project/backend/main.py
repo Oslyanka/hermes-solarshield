@@ -31,7 +31,7 @@ SPACEWEATHERLIVE_URL = "https://www.spaceweatherlive.com/en/solar-activity.html"
 app = FastAPI(title="Hermes SolarShield API", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "https://hermes-solarshield.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -125,7 +125,12 @@ def startup() -> None:
     global MODEL
     init_db()
     ensure_samples()
-    MODEL = load_model()
+    try:
+        MODEL = load_model()
+        print(f"MODEL LOADED: {MODEL}")
+    except Exception as e:
+        print(f"MODEL LOAD FAILED: {e}")
+        MODEL = None
 
 
 @app.get("/health")
