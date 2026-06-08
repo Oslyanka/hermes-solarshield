@@ -1,0 +1,361 @@
+{
+  "dataset": {
+    "source": "data\\donki_0131_more\\manifest.json",
+    "channel": "SDO AIA 131",
+    "classes": [
+      "C",
+      "M",
+      "X"
+    ],
+    "label_policy": "NASA DONKI classType first letter: C, M or X",
+    "split_counts": {
+      "train": {
+        "C": 78,
+        "M": 78,
+        "X": 24
+      },
+      "val": {
+        "C": 18,
+        "M": 18,
+        "X": 6
+      },
+      "test": {
+        "C": 24,
+        "M": 24,
+        "X": 7
+      }
+    }
+  },
+  "comparison": [
+    {
+      "architecture": "acv_donki_tiny_cnn",
+      "path": "ml\\models\\acv_donki_tiny_cnn.pt",
+      "parameter_count": 89315,
+      "val_accuracy": 0.7142857142857143,
+      "val_loss": 0.6874271432558695,
+      "test_accuracy": 0.5636363636363636,
+      "test_loss": 0.9529519826173782
+    },
+    {
+      "architecture": "acv_donki_deep_cnn",
+      "path": "ml\\models\\acv_donki_deep_cnn.pt",
+      "parameter_count": 749067,
+      "val_accuracy": 0.8095238095238095,
+      "val_loss": 0.6373121837774912,
+      "test_accuracy": 0.509090909090909,
+      "test_loss": 1.0192505717277527
+    }
+  ],
+  "best_model": {
+    "architecture": "acv_donki_tiny_cnn",
+    "path": "ml\\models\\acv_donki_tiny_cnn.pt",
+    "parameter_count": 89315,
+    "val_accuracy": 0.7142857142857143,
+    "val_loss": 0.6874271432558695,
+    "test_accuracy": 0.5636363636363636,
+    "test_loss": 0.9529519826173782,
+    "confusion_matrix": [
+      [
+        17,
+        7,
+        0
+      ],
+      [
+        9,
+        10,
+        5
+      ],
+      [
+        1,
+        2,
+        4
+      ]
+    ],
+    "classification_report": {
+      "C": {
+        "precision": 0.6296296296296297,
+        "recall": 0.7083333333333334,
+        "f1": 0.6666666666666667
+      },
+      "M": {
+        "precision": 0.5263157894736842,
+        "recall": 0.4166666666666667,
+        "f1": 0.46511627906976744
+      },
+      "X": {
+        "precision": 0.4444444444444444,
+        "recall": 0.5714285714285714,
+        "f1": 0.5
+      }
+    },
+    "errors": [
+      {
+        "file": "20220116_194520_1024_0131.jpg",
+        "actual": "C",
+        "predicted": "M",
+        "class_type": "C",
+        "probabilities": {
+          "C": 0.47,
+          "M": 0.48,
+          "X": 0.051
+        }
+      },
+      {
+        "file": "20220504_085634_1024_0131.jpg",
+        "actual": "M",
+        "predicted": "X",
+        "class_type": "M",
+        "probabilities": {
+          "C": 0.065,
+          "M": 0.26,
+          "X": 0.675
+        }
+      },
+      {
+        "file": "20220524_221544_1024_0131.jpg",
+        "actual": "C",
+        "predicted": "M",
+        "class_type": "C",
+        "probabilities": {
+          "C": 0.443,
+          "M": 0.492,
+          "X": 0.065
+        }
+      },
+      {
+        "file": "20220430_134644_1024_0131.jpg",
+        "actual": "X",
+        "predicted": "M",
+        "class_type": "X",
+        "probabilities": {
+          "C": 0.19,
+          "M": 0.553,
+          "X": 0.257
+        }
+      },
+      {
+        "file": "20221112_180008_1024_0131.jpg",
+        "actual": "C",
+        "predicted": "M",
+        "class_type": "C",
+        "probabilities": {
+          "C": 0.443,
+          "M": 0.481,
+          "X": 0.077
+        }
+      },
+      {
+        "file": "20220420_035644_1024_0131.jpg",
+        "actual": "X",
+        "predicted": "M",
+        "class_type": "X",
+        "probabilities": {
+          "C": 0.466,
+          "M": 0.488,
+          "X": 0.046
+        }
+      },
+      {
+        "file": "20220204_215608_1024_0131.jpg",
+        "actual": "C",
+        "predicted": "M",
+        "class_type": "C",
+        "probabilities": {
+          "C": 0.364,
+          "M": 0.544,
+          "X": 0.091
+        }
+      },
+      {
+        "file": "20220816_212508_1024_0131.jpg",
+        "actual": "M",
+        "predicted": "C",
+        "class_type": "M",
+        "probabilities": {
+          "C": 0.494,
+          "M": 0.447,
+          "X": 0.059
+        }
+      },
+      {
+        "file": "20220504_001520_1024_0131.jpg",
+        "actual": "M",
+        "predicted": "C",
+        "class_type": "M",
+        "probabilities": {
+          "C": 0.517,
+          "M": 0.426,
+          "X": 0.057
+        }
+      },
+      {
+        "file": "20220815_165634_1024_0131.jpg",
+        "actual": "M",
+        "predicted": "X",
+        "class_type": "M",
+        "probabilities": {
+          "C": 0.033,
+          "M": 0.146,
+          "X": 0.821
+        }
+      },
+      {
+        "file": "20210704_050610_1024_0131.jpg",
+        "actual": "M",
+        "predicted": "X",
+        "class_type": "M",
+        "probabilities": {
+          "C": 0.152,
+          "M": 0.396,
+          "X": 0.452
+        }
+      },
+      {
+        "file": "20211228_035956_1024_0131.jpg",
+        "actual": "M",
+        "predicted": "C",
+        "class_type": "M",
+        "probabilities": {
+          "C": 0.499,
+          "M": 0.459,
+          "X": 0.042
+        }
+      },
+      {
+        "file": "20220428_030544_1024_0131.jpg",
+        "actual": "C",
+        "predicted": "M",
+        "class_type": "C",
+        "probabilities": {
+          "C": 0.334,
+          "M": 0.569,
+          "X": 0.098
+        }
+      },
+      {
+        "file": "20220715_072956_1024_0131.jpg",
+        "actual": "C",
+        "predicted": "M",
+        "class_type": "C",
+        "probabilities": {
+          "C": 0.382,
+          "M": 0.544,
+          "X": 0.074
+        }
+      },
+      {
+        "file": "20211217_003532_1024_0131.jpg",
+        "actual": "M",
+        "predicted": "C",
+        "class_type": "M",
+        "probabilities": {
+          "C": 0.636,
+          "M": 0.336,
+          "X": 0.028
+        }
+      },
+      {
+        "file": "20210703_142956_1024_0131.jpg",
+        "actual": "X",
+        "predicted": "C",
+        "class_type": "X",
+        "probabilities": {
+          "C": 0.547,
+          "M": 0.423,
+          "X": 0.03
+        }
+      },
+      {
+        "file": "20220715_121144_1024_0131.jpg",
+        "actual": "C",
+        "predicted": "M",
+        "class_type": "C",
+        "probabilities": {
+          "C": 0.398,
+          "M": 0.537,
+          "X": 0.065
+        }
+      },
+      {
+        "file": "20211102_030556_1024_0131.jpg",
+        "actual": "M",
+        "predicted": "C",
+        "class_type": "M",
+        "probabilities": {
+          "C": 0.593,
+          "M": 0.387,
+          "X": 0.02
+        }
+      },
+      {
+        "file": "20220505_140556_1024_0131.jpg",
+        "actual": "M",
+        "predicted": "C",
+        "class_type": "M",
+        "probabilities": {
+          "C": 0.6,
+          "M": 0.357,
+          "X": 0.043
+        }
+      },
+      {
+        "file": "20220311_223610_1024_0131.jpg",
+        "actual": "M",
+        "predicted": "X",
+        "class_type": "M",
+        "probabilities": {
+          "C": 0.109,
+          "M": 0.341,
+          "X": 0.55
+        }
+      },
+      {
+        "file": "20220815_143546_1024_0131.jpg",
+        "actual": "M",
+        "predicted": "X",
+        "class_type": "M",
+        "probabilities": {
+          "C": 0.129,
+          "M": 0.328,
+          "X": 0.543
+        }
+      },
+      {
+        "file": "20220504_194544_1024_0131.jpg",
+        "actual": "M",
+        "predicted": "C",
+        "class_type": "M",
+        "probabilities": {
+          "C": 0.527,
+          "M": 0.42,
+          "X": 0.053
+        }
+      },
+      {
+        "file": "20220325_052556_1024_0131.jpg",
+        "actual": "M",
+        "predicted": "C",
+        "class_type": "M",
+        "probabilities": {
+          "C": 0.514,
+          "M": 0.423,
+          "X": 0.063
+        }
+      },
+      {
+        "file": "20211029_024508_1024_0131.jpg",
+        "actual": "M",
+        "predicted": "C",
+        "class_type": "M",
+        "probabilities": {
+          "C": 0.557,
+          "M": 0.403,
+          "X": 0.041
+        }
+      }
+    ]
+  },
+  "active_model_path": "ml\\models\\solar_flare_donki_classifier_131.pt",
+  "target_accuracy": 0.88,
+  "ethical_note": "Dataset uses historical NASA DONKI labels and SDO images nearest to flare peak; no pretrained model and no test leakage or manual output calibration."
+}
