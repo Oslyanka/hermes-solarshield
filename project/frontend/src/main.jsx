@@ -323,7 +323,7 @@ function SolarAnalysis({ latest, setLatest, refresh, notify, modelStatus, spaceW
   const [samples, setSamples] = useState([]);
   const [busy, setBusy] = useState(false);
   const isForecast = modelStatus?.selected_model_mode === 'forecast';
-  const recommendedSamples = samples.filter((sample) => ['validated_aia_131', 'recommended_aia_131', 'forecast_demo'].includes(sample.template));
+  const recommendedSamples = samples.filter((sample) => ['validated_aia_131', 'recommended_aia_131', 'forecast_demo', 'forecast_real'].includes(sample.template));
 
   useEffect(() => {
     apiJson('/samples').then(setSamples).catch(() => setSamples([]));

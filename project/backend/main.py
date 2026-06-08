@@ -164,6 +164,33 @@ def aia_131_examples() -> list[dict[str, str]]:
 
 
 def forecast_demo_examples() -> list[dict[str, str]]:
+    root = SAMPLE_DIR / "forecast_real_examples"
+    selected = [
+        ("low", "2021-02-18", "C 1% / M 1% / X 1%", "low_20210218_010532_1024_0131.jpg"),
+        ("medium", "2020-11-29", "C 60% / M 15% / X 1%", "medium_20201129_125522_1024_0131.jpg"),
+        ("high", "2023-05-09", "C 99% / M 65% / X 20%", "high_20230509_224508_1024_0131.jpg"),
+    ]
+    examples = []
+    for level, date, swl_target, filename in selected:
+        if not (root / filename).exists():
+            continue
+        examples.append(
+            {
+                "id": f"forecast-real-{level}",
+                "level": level.upper(),
+                "label": f"NASA/SpaceWeatherLive {level.upper()}",
+                "template": "forecast_real",
+                "channel": "NASA SDO AIA 131",
+                "format": "1024_0131.jpg",
+                "filename": filename,
+                "date": date,
+                "source": "Wayback SpaceWeatherLive + NASA SDO",
+                "swl_target": swl_target,
+                "url": f"/samples/forecast-real/{filename}",
+            }
+        )
+    if examples:
+        return examples
     ensure_samples()
     return [
         {
@@ -274,6 +301,16 @@ def acv_recommended_sample_file(filename: str) -> FileResponse:
     if "/" in filename or "\\" in filename:
         raise HTTPException(status_code=400, detail="Sample invalido.")
     path = SAMPLE_DIR / "acv_recommended_0131" / filename
+    if not path.exists() or path.suffix.lower() not in {".jpg", ".jpeg", ".png"}:
+        raise HTTPException(status_code=404, detail="Sample not found")
+    return FileResponse(path)
+
+
+@app.get("/samples/forecast-real/{filename}")
+def forecast_real_sample_file(filename: str) -> FileResponse:
+    if "/" in filename or "\\" in filename:
+        raise HTTPException(status_code=400, detail="Sample invalido.")
+    path = SAMPLE_DIR / "forecast_real_examples" / filename
     if not path.exists() or path.suffix.lower() not in {".jpg", ".jpeg", ".png"}:
         raise HTTPException(status_code=404, detail="Sample not found")
     return FileResponse(path)
