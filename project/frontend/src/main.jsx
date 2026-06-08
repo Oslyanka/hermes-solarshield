@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
-const res = await fetch(`${API_URL}/health`);
+const API_BASE = (
+  import.meta.env.VITE_API_URL || 'https://solarshield-production.up.railway.app'
+).replace(/\/$/, '');
 
 const navItems = [
   { id: 'overview', label: 'Inicio', icon: 'file' },
@@ -54,12 +54,14 @@ function normalizeAnalysis(item) {
   };
 }
 
-async function apiJson(path, options) {
+async function apiJson(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, options);
+
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
     throw new Error(error.detail || `Erro HTTP ${response.status}`);
   }
+
   return response.json();
 }
 
