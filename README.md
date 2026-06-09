@@ -445,63 +445,61 @@ Linux/macOS cron, exemplo a cada 6 horas:
 0 */6 * * * cd /caminho/hermes-solarshield/backend && python rpa/automation.py --api-url http://127.0.0.1:8000
 ```
 
-## Como cada materia e atendida
+## Atendimento aos requisitos da GS
 
-### Applied Computer Vision
+Esta secao resume a entrega em relacao aos dois conjuntos de requisitos: a rubrica geral de IA/ML e a rubrica especifica de Applied Computer Vision.
 
-- Upload ou selecao de imagem solar demo.
-- Preprocessamento de imagem em `backend/ml/model.py`.
-- Predicao de risco `LOW`, `MEDIUM` ou `HIGH`.
-- Score numerico, confianca e probabilidades por classe.
-- Dataset SDOBenchmark AIA 131 selecionado e rotulado por `peak_flux`.
-- Duas arquiteturas CNN proprias treinadas do zero: `acv_tiny_cnn` e `acv_deep_cnn`.
-- Comparacao por accuracy, loss, matriz de confusao, precision, recall, F1 e exemplos de erros.
-- Relatorio academico em `backend/reports/acv_classification_report.md`.
-- Script de preparacao do SDOBenchmark em `backend/ml/prepare_dataset.py`.
-- Script principal de treino ACV em `backend/ml/train_acv_classifiers.py`.
+### Rubrica geral de IA/ML
 
-### Generative AI For Engineering
+| Requisito | Como o projeto atende |
+|---|---|
+| Definicao do problema | O Hermes SolarShield estima risco operacional de solar flares para infraestrutura orbital, conectando clima espacial, imagens solares e decisao de engenharia. |
+| Dataset escolhido ou sintetico | Usa SDOBenchmark AIA 131, imagens NASA SDO AIA 131, historico SpaceWeatherLive via Wayback Machine, NASA DONKI e dataset sintetico GAIE com 1.200 linhas e 13 colunas. |
+| Tratamento e preparacao | As imagens sao convertidas para escala de cinza, recebem autocontraste, resize, normalizacao e augmentation leve; os dados tabulares recebem engenharia de atributos e split treino/teste estratificado. |
+| Tecnicas de treinamento | Foram treinadas CNNs proprias do zero para imagens, um modelo ForecastCNN C/M/X e modelos tabulares Random Forest e Gradient Boosting. |
+| Metricas de desempenho | O projeto registra accuracy, loss, matriz de confusao, precision, recall, F1, MAE historico e percentual dentro de margens de erro. |
+| Avaliacao visual | A aplicacao permite upload e exemplos reais NASA/SpaceWeatherLive para LOW, MEDIUM e HIGH; a resposta mostra probabilidades, risco, explicacao e comparacao com SpaceWeatherLive. |
+| Codigo e documentacao | Codigo, modelos, scripts de treino, relatorios e instrucoes estao no GitHub, com backend FastAPI, frontend Vite e endpoints documentados. |
 
-- Hermes Copilot na pagina `Generative AI`.
-- Prompts estruturados em `backend/genai/prompts.py`.
-- Geracao de resumo tecnico, resumo para leigos, plano de mitigacao e relatorio executivo.
-- Fallback por templates locais, sem dependencia obrigatoria de API externa.
-- Preparado para integracao futura via `.env`.
-- Pipeline GAIE em `backend/ml/train_gaie_pipeline.py`.
-- Dataset sintetico de engenharia espacial com 1.200 linhas e 13 colunas.
-- Comparacao entre Random Forest e Gradient Boosting.
-- Validacao por accuracy, classification report e matriz de confusao em `backend/ml/models/gaie_metrics.json`.
-- Interpretabilidade com SHAP em `backend/reports/gaie_shap_summary.csv` quando `shap` esta instalado.
-- Fallback de interpretabilidade por permutation importance em `backend/reports/gaie_feature_importance.csv`.
-- Deploy tabular por FastAPI em `POST /gaie/predict`.
+### Rubrica de Applied Computer Vision
 
-### Robotic Process Automation RPA
+| Criterio | Evidencia no projeto |
+|---|---|
+| Problema e conexao com a Global Solution | Classificacao/previsao de risco de solar flares em imagens SDO AIA 131 para apoiar missoes, satelites e infraestrutura orbital. |
+| Dataset e pre-processamento | SDOBenchmark AIA 131 com classes LOW, MEDIUM e HIGH por `peak_flux`; splits de treino, validacao e teste; balanceamento parcial; preprocessamento em `project/backend/ml/model.py` e scripts em `project/backend/ml/`. |
+| CNNs do zero | `acv_tiny_cnn` e `acv_deep_cnn` foram implementadas sem modelos pre-treinados, usando Conv2D, BatchNorm, ReLU, MaxPool, Dropout, AdaptiveAvgPool e camadas densas. |
+| Treinamento e validacao | O script `project/backend/ml/train_acv_classifiers.py` acompanha train/val loss, accuracy, melhor checkpoint e historico de treino. |
+| Comparacao e analise tecnica | O relatorio `project/backend/reports/acv_classification_report.md` compara Tiny vs Deep, mostra matriz de confusao, precision, recall, F1, exemplos de erro e justificativa tecnica. |
+| Demonstracao funcional | O modelo roda em API FastAPI (`POST /predict`) e no frontend Vercel, com upload de imagens e exemplos reais NASA/SpaceWeatherLive. |
+| Documentacao e organizacao | README, scripts, checkpoints, relatorios e endpoints estao organizados no repositorio; a execucao local e o deploy estao documentados. |
 
-- Endpoint `POST /rpa/run`.
-- Script `backend/rpa/automation.py`.
-- Logs em SQLite e em `backend/logs/rpa.log`.
-- Simulacao completa de pipeline operacional: imagem, predicao, banco, relatorio e alerta.
-- Botao manual no frontend.
-- Instrucoes para agendamento com cron ou Task Scheduler.
+### Resultados principais
 
-## Checklist academico
+| Modelo | Resultado |
+|---|---:|
+| ACV `acv_tiny_cnn` | 53.00% test accuracy |
+| ACV `acv_deep_cnn` | 51.76% test accuracy |
+| GAIE Random Forest | 79.58% test accuracy |
+| GAIE Gradient Boosting | 80.83% test accuracy |
+| Forecast C/M/X SpaceWeatherLive | 13.15 p.p. MAE historico |
 
-- [x] Aplicacao web unica com frontend e backend.
-- [x] Dashboard dark mode com identidade Hermes.
-- [x] Sidebar fixa com logo.
-- [x] Paginas Dashboard, ACV, Generative AI, RPA e Reports.
-- [x] FastAPI com endpoints solicitados.
-- [x] Persistencia SQLite para analises e relatorios.
-- [x] Computer Vision em modo demo e estrutura para modelo real.
-- [x] Scripts para dataset e treinamento.
-- [x] Duas CNNs treinadas do zero para classificacao de imagens.
-- [x] Comparacao entre arquiteturas com accuracy, loss e matriz de confusao.
-- [x] Analise de erros e justificativa tecnica quando a referencia de 88% nao e atingida.
-- [x] IA Generativa com prompts e fallback sem API externa.
-- [x] Pipeline GAIE com dataset sintetico 1000+ linhas e 10+ colunas.
-- [x] Dois modelos tabulares comparados para GAIE.
-- [x] Interpretabilidade GAIE por SHAP ou permutation importance.
-- [x] Endpoint FastAPI `/gaie/predict` para deploy do modelo tabular.
-- [x] RPA manual e script agendavel.
-- [x] Relatorios TXT e PDF simples.
-- [x] README com instalacao, execucao e relacao com as materias.
+O alvo de 88% em ACV nao foi atingido no teste honesto. A limitacao esta documentada: o `peak_flux` futuro depende de informacao temporal e magnetica, enquanto esta entrega usa um frame AIA 131 isolado. Mesmo assim, o projeto apresenta comparacao entre arquiteturas, analise de erro, justificativa tecnica e uma demonstracao funcional.
+
+### Exemplos reais para avaliacao visual
+
+Os exemplos abaixo usam imagens reais NASA SDO AIA 131 do conjunto Wayback/SpaceWeatherLive:
+
+| Risco | Arquivo | Referencia historica SpaceWeatherLive | Saida do modelo |
+|---|---|---|---|
+| LOW | `project/backend/sample_data/forecast_real_examples/low_20210218_010532_1024_0131.jpg` | C 1% / M 1% / X 1% | LOW, C 32.5% / M 7.2% / X 2.3% |
+| MEDIUM | `project/backend/sample_data/forecast_real_examples/medium_20201129_125522_1024_0131.jpg` | C 60% / M 15% / X 1% | MEDIUM, C 84.3% / M 31.4% / X 4.3% |
+| HIGH | `project/backend/sample_data/forecast_real_examples/high_20230509_224508_1024_0131.jpg` | C 99% / M 65% / X 20% | HIGH, C 99.9% / M 80.0% / X 15.6% |
+
+### Arquivos de referencia
+
+- `project/backend/ml/train_acv_classifiers.py`: treino e comparacao das CNNs.
+- `project/backend/reports/acv_classification_report.md`: relatorio ACV com metricas e matriz de confusao.
+- `project/backend/ml/train_wayback_forecast.py`: treino do forecast C/M/X com Wayback SpaceWeatherLive.
+- `project/backend/reports/wayback_forecast_evaluation.md`: avaliacao historica C/M/X.
+- `project/backend/ml/train_gaie_pipeline.py`: pipeline tabular GAIE.
+- `project/backend/reports/gaie_pipeline_report.md`: relatorio GAIE.
