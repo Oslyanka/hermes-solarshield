@@ -1,3 +1,7 @@
+# Video de demonstracao - Computer Vision
+
+[Video dos requisitos de Computer Vision](https://youtu.be/OWku3tuji0s)
+
 # Integrantes
 #### Aksel Viktor Caminha Rae RM: 99011 
 #### Ian Xavier Kuraoka RM: 98860 
@@ -6,7 +10,7 @@
 
 # Hermes SolarShield
 
-Hermes SolarShield e um webapp academico baseado no Projeto Hermes para previsao e resposta a solar flares. A aplicacao simula uma plataforma de clima espacial que analisa imagens solares, estima risco nas proximas 24 horas, gera explicacoes com IA generativa e automatiza alertas e relatorios por RPA.
+Hermes SolarShield e um webapp academico baseado no Projeto Hermes para previsao e resposta a solar flares. A aplicacao simula uma plataforma de clima espacial que analisa imagens solares, estima risco nas proximas 24 horas e gera explicacoes com IA generativa.
 
 O projeto roda em modo demo mesmo sem o dataset real SDOBenchmark. Quando o dataset e um modelo treinado estiverem disponiveis, o backend ja possui a estrutura de preparacao, treinamento e carregamento do modelo.
 
@@ -399,23 +403,7 @@ POST /gaie/predict
 }
 ```
 
-### Agendamento
-
-Windows Task Scheduler:
-
-```text
-Programa: caminho\para\python.exe
-Argumentos: rpa\automation.py --api-url http://127.0.0.1:8000
-Iniciar em: C:\...\hermes-solarshield\backend
-```
-
-Linux/macOS cron, exemplo a cada 6 horas:
-
-```cron
-0 */6 * * * cd /caminho/hermes-solarshield/backend && python rpa/automation.py --api-url http://127.0.0.1:8000
-```
-
-## Atendimento aos requisitos
+## Atendimento aos requisitos da GS
 
 Esta secao resume a entrega em relacao aos dois conjuntos de requisitos: a rubrica geral de IA/ML e a rubrica especifica de Applied Computer Vision.
 
