@@ -1,7 +1,6 @@
 # Integrantes
 #### Aksel Viktor Caminha Rae RM: 99011 
 #### Ian Xavier Kuraoka RM: 98860 
-#### Lucas Laia Manentti RM: 97709 
 #### Rony Ken Nagai RM: 551549 
 #### Tomáz Versolato Carballo RM: 551417 
 
