@@ -16,7 +16,6 @@ O projeto roda em modo demo mesmo sem o dataset real SDOBenchmark. Quando o data
 - Backend: Python + FastAPI
 - Computer Vision: Python, Pillow, NumPy e estrutura para PyTorch
 - Banco de dados: SQLite
-- RPA: script Python e endpoint manual
 - Relatorios: TXT e PDF simples
 
 ## Estrutura
@@ -27,7 +26,6 @@ hermes-solarshield/
   backend/
   backend/ml/
   backend/genai/
-  backend/rpa/
   backend/database/
   backend/reports/
   backend/logs/
@@ -123,7 +121,6 @@ As configuracoes do Vercel estao em `project/frontend/vercel.json`.
 - `GET /health`: status da API.
 - `POST /predict`: recebe imagem solar e retorna `risk_level`, `score`, `confidence`, `flare_probabilities` com C/M/X e `explanation_short`.
 - `POST /generate-report`: gera relatorio textual e PDF simples.
-- `POST /rpa/run`: executa rotina automatica completa.
 - `GET /analyses`: lista analises salvas.
 - `GET /reports`: lista relatorios gerados.
 
@@ -133,7 +130,6 @@ Tambem foram incluidos:
 - `GET /gaie/status`: lista atributos e status do modelo tabular GAIE.
 - `POST /gaie/predict`: prediz risco operacional com telemetria tabular GAIE.
 - `GET /samples`: imagens solares demo.
-- `GET /rpa/logs`: logs da automacao.
 - `GET /reports/{id}/download/txt` e `/pdf`: download dos relatorios.
 
 ## Modelo de Computer Vision
@@ -403,32 +399,6 @@ POST /gaie/predict
 }
 ```
 
-## RPA
-
-A rotina automatica simula:
-
-1. carregar uma imagem solar de exemplo;
-2. executar previsao;
-3. salvar resultado no SQLite;
-4. gerar relatorio;
-5. criar alerta;
-6. registrar logs.
-
-Execucao manual pelo frontend: pagina `RPA Automations`, botao `Executar rotina automatica`.
-
-Execucao manual por script:
-
-```bash
-cd backend
-python rpa/automation.py --api-url http://127.0.0.1:8000
-```
-
-Logs:
-
-```text
-backend/logs/rpa.log
-```
-
 ### Agendamento
 
 Windows Task Scheduler:
@@ -445,7 +415,7 @@ Linux/macOS cron, exemplo a cada 6 horas:
 0 */6 * * * cd /caminho/hermes-solarshield/backend && python rpa/automation.py --api-url http://127.0.0.1:8000
 ```
 
-## Atendimento aos requisitos da GS
+## Atendimento aos requisitos
 
 Esta secao resume a entrega em relacao aos dois conjuntos de requisitos: a rubrica geral de IA/ML e a rubrica especifica de Applied Computer Vision.
 
